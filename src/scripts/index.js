@@ -7,6 +7,14 @@ import { openPopup } from "../components/modal.js";
 import { closePopup } from "../components/modal.js";
 
 
+//Переменные попапов
+const popupEdit = document.querySelector(".popup_type_edit");
+const popupNewCard = document.querySelector(".popup_type_new-card");
+const popups = document.querySelectorAll(".popup");
+const popupImage = document.querySelector(".popup_type_image");
+const popupInnerImage = document.querySelector(".popup__image");
+const imageText = document.querySelector(".popup__caption"); 
+
 // @todo: Темплейт карточки
 export const cardTemplate = document.querySelector("#card-template");
 
@@ -19,17 +27,10 @@ initialCards.forEach(function (item) {
   placeList.appendChild(card);
 });
 
-//Переменные попапов
-const popupEdit = document.querySelector(".popup_type_edit");
-const popupNewCard = document.querySelector(".popup_type_new-card");
-const popups = document.querySelectorAll(".popup");
-const popupImage = document.querySelector(".popup_type_image");
-
 function openPopupForImage(image) {
   openPopup(popupImage);
-  const popupInnerImage = document.querySelector(".popup__image");
   popupInnerImage.setAttribute("src", image.src);
-  const imageText = document.querySelector(".popup__caption");
+  popupInnerImage.setAttribute("alt", image.alt);
   imageText.textContent = image.alt;
 }
 
@@ -40,7 +41,10 @@ const closeButtons = document.querySelectorAll(".popup__close");
 
 
 //Открываем попапы
-openButtonEdit.addEventListener("click", () => openPopup(popupEdit));
+openButtonEdit.addEventListener("click", () => {
+  fillFormFromProfile();
+  openPopup(popupEdit);
+});
 openButtonAdd.addEventListener("click", () => openPopup(popupNewCard));
 
 // Закрываем попап по клику на оверлей
@@ -61,17 +65,6 @@ closeButtons.forEach((button) => {
     const popup = button.closest(".popup_is-opened");
     closePopup(popup);
   });
-});
-
-//Закрываем по esc
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    popups.forEach((popup) => {
-      if (popup.classList.contains("popup_is-opened")) {
-        closePopup(popup);
-      }
-    });
-  }
 });
 
 //Переменные формы Edit
@@ -117,8 +110,8 @@ function handleAddCardFormSubmit(evt) {
 
   placeList.prepend(card);
 
-  cardNameInput.value = "";
-  cardLinkInput.value = "";
+  const formElement = document.forms['new-place'];
+  formElement.reset();
 
   const popup = popupNewCard.closest(".popup_is-opened");
   closePopup(popup);
